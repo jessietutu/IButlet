@@ -7,9 +7,13 @@
 //
 
 import UIKit
-//import imagePicker
+//import TLPhotoPicker
+
 
 class SCrollViewController: UIViewController ,UIScrollViewDelegate, UIImagePickerControllerDelegate {
+    
+
+    
 
     @IBAction func chooseImage(_ sender: Any) {
         let alert = UIAlertController(title: "Choose Image", message: nil, preferredStyle: .actionSheet)
@@ -112,4 +116,22 @@ class SCrollViewController: UIViewController ,UIScrollViewDelegate, UIImagePicke
         self.present(imagePicker, animated: true, completion: nil)
     }
 
+    
+//    func selectedCameraCell(picker: TLPhotosPickerViewController) {
+//        <#code#>
+//    }
+//
+//    func deselectedPhoto(picker: TLPhotosPickerViewController, at: Int) {
+//        <#code#>
+//    }
+//
+//    func selectedPhoto(picker: TLPhotosPickerViewController, at: Int) {
+//        <#code#>
+//    }
+//
+//    func selectedAlbum(picker: TLPhotosPickerViewController, title: String, at: Int) {
+//        <#code#>
+//    }
+    
+    
 }
