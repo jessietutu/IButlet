@@ -13,7 +13,16 @@ class SkillsViewController: UIViewController,UITableViewDelegate,UITableViewData
     var savedSkills : [String] = []
     
     var skills = ["Plumbing & Heating Service","Electrival Service","House Maidi Sercive","Appliances,Repairs & Installations","Garden Works & Maintenance","Morning Service","Roofing","Leakage","Flooring"]
+    var selectedSkills = ""
     
+    @IBAction func next(_ sender: Any) {
+        selectedSkills = savedSkills.joined(separator: ",")
+        print(selectedSkills)
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let entity = Profile(context: context)
+        entity.skills = selectedSkills
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return skills.count

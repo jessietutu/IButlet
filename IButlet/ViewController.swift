@@ -9,10 +9,12 @@
 import UIKit
 
 
-
 class ViewController: UIViewController , UINavigationControllerDelegate,UIImagePickerControllerDelegate{
-     var imagePicker = UIImagePickerController()
-
+    
+    var imagePicker = UIImagePickerController()
+    var imageName : String = ""
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     @IBAction func addressButton(_ sender: Any) {
         
     }
@@ -31,14 +33,6 @@ class ViewController: UIViewController , UINavigationControllerDelegate,UIImageP
         
         alert.addAction(UIAlertAction.init(title: "Cancel", style: .cancel, handler: nil))
         
-        switch UIDevice.current.userInterfaceIdiom {
-        case .pad:
-            alert.popoverPresentationController?.sourceView = sender as? UIView
-            alert.popoverPresentationController?.sourceRect = (sender as AnyObject).bounds
-            alert.popoverPresentationController?.permittedArrowDirections = .up
-        default:
-            break
-        }
         
         self.present(alert, animated: true, completion: nil)
     }
@@ -50,8 +44,59 @@ class ViewController: UIViewController , UINavigationControllerDelegate,UIImageP
         }
 
         profileImage.image = selectedImage
+
+        let fileMng = FileManager.default
+        let imgURL = fileMng.urls(for : .documentDirectory, in: .userDomainMask).first!
+        let documentPath = imgURL.path
+        imageName = randomString(length: 4)
+        let imgPath = imgURL.appendingPathComponent("\(imageName).png")
+        
+        do {
+            let files = try fileMng.contentsOfDirectory(atPath: "\(documentPath)")
+            
+            for file in files {
+                if "\(documentPath)/\(file)" == imgPath.path {
+                    try fileMng.removeItem(atPath: imgPath.path)
+                }
+            }
+        } catch  {
+            print("Could not add image from document directory: \(error)")
+        }
+        
+        // Create imageData and write to filePath
+        do {
+            if let pngImageData = selectedImage.pngData() {
+                try pngImageData.write(to: imgPath, options: .atomic)
+            }
+        } catch {
+            print("couldn't write image")
+        }
+
+        //save file path in core data
+        let entity = Profile(context: context)
+        entity.profile_img = imgPath.path
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+
+        getData()
+        //test if we write into core data
+        
         dismiss(animated: true, completion: nil)
     }
+    
+    func getData() {
+        do{
+            let img = try context.fetch(Profile.fetchRequest())
+            print(img)
+        }catch{
+            print("fetch faild ")
+        }
+    }
+    
+    func randomString(length: Int) -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        return String((0...length-1).map{ _ in letters.randomElement()! })
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()

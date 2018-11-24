@@ -10,9 +10,23 @@ import UIKit
 
 class ViewControllerForTable: UIViewController,UITableViewDataSource,UITableViewDelegate {
     
-     var location = ["Vancouver","Burnaby","Richmond","Maple Ridge","Langley","Surrey","Coquitlam","New Westminister","North Vancouver","West Vancouver","Delta", "White Rock", "Port Moody", "Port Cpquitlam"]
+
+    var location = ["Vancouver","Burnaby","Richmond","Maple Ridge","Langley","Surrey","Coquitlam","New Westminister","North Vancouver","West Vancouver","Delta", "White Rock", "Port Moody", "Port Cpquitlam"]
     var checked = [Bool]()
     var savedLocation : [String] = []
+    var cites = ""
+    
+    @IBAction func next(_ sender: Any) {
+
+        cites = savedLocation.joined(separator: ",")
+        print(cites)
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        let entity = Profile(context: context)
+        entity.service_city = cites
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+        }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return location.count
     }
